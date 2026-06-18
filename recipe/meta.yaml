@@ -6,8 +6,8 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/P/PyLD/pyld-{{ version }}.tar.gz
-  sha256: b1913a06054f35a31e4d9916d184852909b2a3c5fea55c341bd00917cf8b22ef
+  url: https://github.com/digitalbazaar/pyld/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 5ec88e2d21052480f9b9feb4f02f914f122ae5c3ac8cc3e9dffc9fd495ba26fc
 
 build:
   number: 0
@@ -24,9 +24,11 @@ requirements:
     - cachetools
     - frozendict
     - lxml
-    - requests
+    - requests  # optional upstream extra, but needed for the default document loader
 
 test:
+  source_files:
+    - tests
   imports:
     - c14n
     - pyld
@@ -34,13 +36,23 @@ test:
     - pyld.documentloader.requests
   requires:
     - pip
+    - pytest
+    - typing-extensions
+    - aiohttp
   commands:
     - pip check
+    - python -m pytest tests/ -v
 
 about:
   home: https://github.com/digitalbazaar/pyld
   summary: Python implementation of the JSON-LD API
-  license: BSD-3-Clause
+  description: |
+    PyLD is an implementation of the JSON-LD specification in Python.
+    JSON-LD (JavaScript Object Notation for Linked Data) is a method of
+    encoding Linked Data using JSON, allowing data to be serialized in a
+    way that is similar to traditional JSON.
+  # include c14n is licensed inline under Apache-2.0
+  license: BSD-3-Clause AND Apache-2.0
   license_family: BSD
   license_file: LICENSE
   doc_url: https://github.com/digitalbazaar/pyld
