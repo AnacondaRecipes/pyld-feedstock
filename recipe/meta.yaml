@@ -1,0 +1,64 @@
+{% set name = "pyld" %}
+{% set version = "3.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/digitalbazaar/pyld/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 5ec88e2d21052480f9b9feb4f02f914f122ae5c3ac8cc3e9dffc9fd495ba26fc
+
+build:
+  number: 0
+  skip: true  # [py<39]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+  run:
+    - python
+    - cachetools
+    - frozendict
+    - lxml
+    - requests  # optional upstream extra, but needed for the default document loader
+
+test:
+  source_files:
+    - tests
+  imports:
+    - c14n
+    - pyld
+    - pyld.documentloader
+    - pyld.documentloader.requests
+  requires:
+    - pip
+    - pytest
+    - typing-extensions
+    - aiohttp
+  commands:
+    - pip check
+    - python -m pytest tests/ -v
+
+about:
+  home: https://github.com/digitalbazaar/pyld
+  summary: Python implementation of the JSON-LD API
+  description: |
+    PyLD is an implementation of the JSON-LD specification in Python.
+    JSON-LD (JavaScript Object Notation for Linked Data) is a method of
+    encoding Linked Data using JSON, allowing data to be serialized in a
+    way that is similar to traditional JSON.
+  # include c14n is licensed inline under Apache-2.0
+  license: BSD-3-Clause AND Apache-2.0
+  license_family: BSD
+  license_file: LICENSE
+  doc_url: https://github.com/digitalbazaar/pyld
+  dev_url: https://github.com/digitalbazaar/pyld
+
+extra:
+  recipe-maintainers:
+    - notestaff
+    - bollwyvl
